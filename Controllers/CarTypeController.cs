@@ -5,27 +5,27 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalCar.DTOs;
 using RentalCar.Entities;
-using RentalCar.Models.Brand;
+using RentalCar.Models.CarType;
 
 namespace RentalCar.Controllers
 {
-    [Route("/brand")]
+    [Route("/carType")]
     [ApiController]
-    public class BrandController : ControllerBase
+    public class CarTypeController : ControllerBase
     {
         private readonly RentalCarContext _context;
-        public BrandController(RentalCarContext context)
+        public CarTypeController(RentalCarContext context)
         {
             _context = context;
         }
         [HttpGet]
         public IActionResult Index()
         {
-            List<Brand> brands = _context.Brands.ToList();
-            List<BrandDTO> data= new List<BrandDTO>();
-            foreach (Brand brand in brands)
+            List<Cartype> CarTypes = _context.Cartypes.ToList();
+            List<CarTypeDTO> data = new List<CarTypeDTO>();
+            foreach (Cartype Cartype in CarTypes)
             {
-                data.Add(new BrandDTO { id=brand.Id, name=brand.Name,icon=brand.Icon});
+                data.Add(new CarTypeDTO { id = Cartype.Id, name = Cartype.Name, icon = Cartype.Icon, description=Cartype.Description });
             }
             return Ok(data);
         }
@@ -35,10 +35,10 @@ namespace RentalCar.Controllers
         {
             try
             {
-                Brand brand = _context.Brands.Find(id);
-                if (brand != null)
+                Cartype CarType = _context.Cartypes.Find(id);
+                if (CarType != null)
                 {
-                    return Ok(new BrandDTO { id = brand.Id, name = brand.Name, icon = brand.Icon });
+                    return Ok(new CarTypeDTO { id = CarType.Id, name = CarType.Name, icon = CarType.Icon, description = CarType.Description });
                 }
             }
             catch (Exception e)
@@ -48,16 +48,16 @@ namespace RentalCar.Controllers
         }
         [HttpPost]
         [Route("create")]
-        public IActionResult Create(CreateBrand model)
+        public IActionResult Create(CreateCarType model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Brand data = new Brand { Name = model.name, Icon=model.icon };
-                    _context.Brands.Add(data);
+                    Cartype data = new Cartype { Name = model.name, Icon = model.icon, Description=model.description };
+                    _context.Cartypes.Add(data);
                     _context.SaveChanges();
-                    return Created($"get-by-id?id={data.Id}", new BrandDTO { id = data.Id, name = data.Name, icon=data.Icon });
+                    return Created($"get-by-id?id={data.Id}", new CarTypeDTO { id = data.Id, name = data.Name, icon = data.Icon, description=data.Description });
                 }
                 catch (Exception e)
                 {
@@ -71,14 +71,14 @@ namespace RentalCar.Controllers
         }
         [HttpPut]
         [Route("update")]
-        public IActionResult Update(EditBrand model)
+        public IActionResult Update(EditCarType model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     {
-                        Brand brand = new Brand { Id = model.id, Name = model.name, Icon=model.icon };
+                        Cartype CarType = new Cartype { Id = model.id, Name = model.name, Icon = model.icon, Description=model.description };
                     }
                 }
                 catch (Exception e)
@@ -94,10 +94,10 @@ namespace RentalCar.Controllers
         {
             try
             {
-                Brand b = _context.Brands.Find(id);
-                if (b == null)
+                Cartype ct = _context.Cartypes.Find(id);
+                if (ct == null)
                     return NotFound();
-                _context.Brands.Remove(b);
+                _context.Cartypes.Remove(ct);
                 _context.SaveChanges();
                 return NoContent();
             }
