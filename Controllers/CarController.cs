@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalCar.DTOs;
 using RentalCar.Entities;
@@ -23,55 +24,33 @@ namespace RentalCar.Controllers
         public IActionResult Index()
         {
             List<Car> cars = _context.Cars.ToList();
-            List<CarDTO> data = new List<CarDTO>();
-
-            foreach (Car car in cars)
+            List<CarDTO> data = cars.Select(car => new CarDTO
             {
-                data.Add(new CarDTO
-                {
-                    id = car.Id,
-                    licensePlate = car.LicensePlate,
-                    model = car.Model,
-                    brandId = car.BrandId,
-                    cartypeId = car.CartypeId,
-                    thumbnail = car.Thumbnail,
-                    price = car.Price,
-                    deposit = car.Deposit,
-                    fuelType = car.FuelType,
-                    transmission = car.Transmission,
-                    kmLimit = car.KmLimit,
-                    modelYear = car.ModelYear,
-                    reverseSensor = car.ReverseSensor,
-                    airConditioner = car.AirConditioner,
-                    driverAirbag = car.DriverAirbag,
-                    cdplayer = car.CDplayer,
-                    brakeAssist = car.BrakeAssist,
-                    seats = car.Seats,
-                    status = car.Status,
-                    description = car.Description,
-                    rate = car.Rate,
-                    createdAt = car.CreatedAt,
-                    updatedAt = car.UpdatedAt,
-                    deletedAt = car.DeletedAt,
-                    brand_id = car.BrandId, // Assuming CategoryId is the correct property name
-                    carType_id = car.CartypeId,   // Assuming CarTypeId is the correct property name
-                    brand = new BrandDTO
-                    {
-                        id = car.Brand.Id,
-                        name = car.Brand.Name,
-                        icon = car.Brand.Icon
-                    },
-                    cartype = new CarTypeDTO
-                    {
-                        id = car.Cartype.Id,
-                        name = car.Cartype.Name,
-                        icon = car.Cartype.Icon,
-                    }
-                });
-            }
-
+                Id = car.Id,
+                LicensePlate = car.LicensePlate,
+                Model = car.Model,
+                BrandId = car.BrandId,
+                CartypeId = car.CartypeId,
+                Thumbnail = car.Thumbnail,
+                Price = car.Price,
+                Deposit = car.Deposit,
+                FuelType = car.FuelType,
+                Transmission = car.Transmission,
+                KmLimit = car.KmLimit,
+                ModelYear = car.ModelYear,
+                ReverseSensor = car.ReverseSensor,
+                AirConditioner = car.AirConditioner,
+                DriverAirbag = car.DriverAirbag,
+                CDplayer = car.CDplayer,
+                BrakeAssist = car.BrakeAssist,
+                Seats = car.Seats,
+                Status = car.Status,
+                Description = car.Description,
+                Rate = car.Rate
+            }).ToList();
             return Ok(data);
         }
+
         [HttpGet]
         [Route("get-by-id")]
         public IActionResult Get(int id)
@@ -79,57 +58,38 @@ namespace RentalCar.Controllers
             try
             {
                 Car car = _context.Cars.Find(id);
-
                 if (car != null)
                 {
                     return Ok(new CarDTO
                     {
-                        id = car.Id,
-                        licensePlate = car.LicensePlate,
-                        model = car.Model,
-                        brandId = car.BrandId,
-                        cartypeId = car.CartypeId,
-                        thumbnail = car.Thumbnail,
-                        price = car.Price,
-                        deposit = car.Deposit,
-                        fuelType = car.FuelType,
-                        transmission = car.Transmission,
-                        kmLimit = car.KmLimit,
-                        modelYear = car.ModelYear,
-                        reverseSensor = car.ReverseSensor,
-                        airConditioner = car.AirConditioner,
-                        driverAirbag = car.DriverAirbag,
-                        cdplayer = car.CDplayer,
-                        brakeAssist = car.BrakeAssist,
-                        seats = car.Seats,
-                        status = car.Status,
-                        description = car.Description,
-                        rate = car.Rate,
-                        createdAt = car.CreatedAt,
-                        updatedAt = car.UpdatedAt,
-                        deletedAt = car.DeletedAt,
-                        brand_id = car.BrandId,
-                        carType_id = car.CartypeId,
-                        brand = new BrandDTO
-                        {
-                            id = car.Brand.Id,
-                            name = car.Brand.Name,
-                            icon = car.Brand.Icon
-                        },
-                        cartype = new CarTypeDTO
-                        {
-                            id = car.Cartype.Id,
-                            name = car.Cartype.Name,
-                            icon=car.Cartype.Icon
-                        }
+                        Id = car.Id,
+                        LicensePlate = car.LicensePlate,
+                        Model = car.Model,
+                        BrandId = car.BrandId,
+                        CartypeId = car.CartypeId,
+                        Thumbnail = car.Thumbnail,
+                        Price = car.Price,
+                        Deposit = car.Deposit,
+                        FuelType = car.FuelType,
+                        Transmission = car.Transmission,
+                        KmLimit = car.KmLimit,
+                        ModelYear = car.ModelYear,
+                        ReverseSensor = car.ReverseSensor,
+                        AirConditioner = car.AirConditioner,
+                        DriverAirbag = car.DriverAirbag,
+                        CDplayer = car.CDplayer,
+                        BrakeAssist = car.BrakeAssist,
+                        Seats = car.Seats,
+                        Status = car.Status,
+                        Description = car.Description,
+                        Rate = car.Rate
                     });
                 }
             }
             catch (Exception e)
             {
-                // Log or handle the exception accordingly
+                // Log the exception or handle it as needed
             }
-
             return NotFound();
         }
 
@@ -141,7 +101,7 @@ namespace RentalCar.Controllers
             {
                 try
                 {
-                    Car car = new Car
+                    Car data = new Car
                     {
                         LicensePlate = model.LicensePlate,
                         Model = model.Model,
@@ -162,53 +122,33 @@ namespace RentalCar.Controllers
                         Seats = model.Seats,
                         Status = model.Status,
                         Description = model.Description,
-                        Rate = model.Rate,
-                        // Set other properties from model
+                        Rate = model.Rate
                     };
-
-                    _context.Cars.Add(car);
+                    _context.Cars.Add(data);
                     _context.SaveChanges();
-
-                    return Created($"get-by-id?id={car.Id}", new CarDTO
+                    return Created($"get-by-id?id={data.Id}", new CarDTO
                     {
-                        id = car.Id,
-                        licensePlate = car.LicensePlate,
-                        model = car.Model,
-                        brandId = car.BrandId,
-                        cartypeId = car.CartypeId,
-                        thumbnail = car.Thumbnail,
-                        price = car.Price,
-                        deposit = car.Deposit,
-                        fuelType = car.FuelType,
-                        transmission = car.Transmission,
-                        kmLimit = car.KmLimit,
-                        modelYear = car.ModelYear,
-                        reverseSensor = car.ReverseSensor,
-                        airConditioner = car.AirConditioner,
-                        driverAirbag = car.DriverAirbag,
-                        cdplayer = car.CDplayer,
-                        brakeAssist = car.BrakeAssist,
-                        seats = car.Seats,
-                        status = car.Status,
-                        description = car.Description,
-                        rate = car.Rate,
-                        createdAt = car.CreatedAt,
-                        updatedAt = car.UpdatedAt,
-                        deletedAt = car.DeletedAt,
-                        brand_id = car.BrandId,
-                        carType_id = car.CartypeId,
-                        brand = new BrandDTO
-                        {
-                            id = car.Brand.Id,
-                            name = car.Brand.Name,
-                            icon = car.Brand.Icon
-                        },
-                        cartype = new CarTypeDTO
-                        {
-                            id = car.Cartype.Id,
-                            name = car.Cartype.Name,
-                            icon = car.Cartype.Icon,
-                        }
+                        Id = data.Id,
+                        LicensePlate = data.LicensePlate,
+                        Model = data.Model,
+                        BrandId = data.BrandId,
+                        CartypeId = data.CartypeId,
+                        Thumbnail = data.Thumbnail,
+                        Price = data.Price,
+                        Deposit = data.Deposit,
+                        FuelType = data.FuelType,
+                        Transmission = data.Transmission,
+                        KmLimit = data.KmLimit,
+                        ModelYear = data.ModelYear,
+                        ReverseSensor = data.ReverseSensor,
+                        AirConditioner = data.AirConditioner,
+                        DriverAirbag = data.DriverAirbag,
+                        CDplayer = data.CDplayer,
+                        BrakeAssist = data.BrakeAssist,
+                        Seats = data.Seats,
+                        Status = data.Status,
+                        Description = data.Description,
+                        Rate = data.Rate
                     });
                 }
                 catch (Exception e)
@@ -217,8 +157,7 @@ namespace RentalCar.Controllers
                 }
             }
 
-            var msgs = ModelState.Values.SelectMany(v => v.Errors)
-                .Select(v => v.ErrorMessage);
+            var msgs = ModelState.Values.SelectMany(v => v.Errors).Select(v => v.ErrorMessage);
             return BadRequest(string.Join(" | ", msgs));
         }
 
@@ -231,7 +170,6 @@ namespace RentalCar.Controllers
                 try
                 {
                     Car car = _context.Cars.Find(model.Id);
-
                     if (car != null)
                     {
                         car.LicensePlate = model.LicensePlate;
@@ -254,50 +192,36 @@ namespace RentalCar.Controllers
                         car.Status = model.Status;
                         car.Description = model.Description;
                         car.Rate = model.Rate;
-                        // Update other properties from model
 
                         _context.SaveChanges();
                         return Ok(new CarDTO
                         {
-                            id = car.Id,
-                            licensePlate = car.LicensePlate,
-                            model = car.Model,
-                            brandId = car.BrandId,
-                            cartypeId = car.CartypeId,
-                            thumbnail = car.Thumbnail,
-                            price = car.Price,
-                            deposit = car.Deposit,
-                            fuelType = car.FuelType,
-                            transmission = car.Transmission,
-                            kmLimit = car.KmLimit,
-                            modelYear = car.ModelYear,
-                            reverseSensor = car.ReverseSensor,
-                            airConditioner = car.AirConditioner,
-                            driverAirbag = car.DriverAirbag,
-                            cdplayer = car.CDplayer,
-                            brakeAssist = car.BrakeAssist,
-                            seats = car.Seats,
-                            status = car.Status,
-                            description = car.Description,
-                            rate = car.Rate,
-                            createdAt = car.CreatedAt,
-                            updatedAt = car.UpdatedAt,
-                            deletedAt = car.DeletedAt,
-                            brand_id = car.BrandId,
-                            carType_id = car.CartypeId,
-                            brand = new BrandDTO
-                            {
-                                id = car.Brand.Id,
-                                name = car.Brand.Name,
-                                icon = car.Brand.Icon
-                            },
-                            cartype = new CarTypeDTO
-                            {
-                                id = car.Cartype.Id,
-                                name = car.Cartype.Name,
-                                icon =car.Cartype.Icon,
-                            }
+                            Id = car.Id,
+                            LicensePlate = car.LicensePlate,
+                            Model = car.Model,
+                            BrandId = car.BrandId,
+                            CartypeId = car.CartypeId,
+                            Thumbnail = car.Thumbnail,
+                            Price = car.Price,
+                            Deposit = car.Deposit,
+                            FuelType = car.FuelType,
+                            Transmission = car.Transmission,
+                            KmLimit = car.KmLimit,
+                            ModelYear = car.ModelYear,
+                            ReverseSensor = car.ReverseSensor,
+                            AirConditioner = car.AirConditioner,
+                            DriverAirbag = car.DriverAirbag,
+                            CDplayer = car.CDplayer,
+                            BrakeAssist = car.BrakeAssist,
+                            Seats = car.Seats,
+                            Status = car.Status,
+                            Description = car.Description,
+                            Rate = car.Rate
                         });
+                    }
+                    else
+                    {
+                        return NotFound();
                     }
                 }
                 catch (Exception e)
@@ -305,7 +229,6 @@ namespace RentalCar.Controllers
                     return BadRequest(e.Message);
                 }
             }
-
             return BadRequest();
         }
 
@@ -316,13 +239,11 @@ namespace RentalCar.Controllers
             try
             {
                 Car car = _context.Cars.Find(id);
-
                 if (car == null)
                     return NotFound();
 
                 _context.Cars.Remove(car);
                 _context.SaveChanges();
-
                 return NoContent();
             }
             catch (Exception e)

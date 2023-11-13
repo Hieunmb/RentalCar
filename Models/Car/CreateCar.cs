@@ -1,67 +1,66 @@
-﻿using RentalCar.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace RentalCar.Models.Car
 {
     public class CreateCar
     {
-        [Required(ErrorMessage = "License plate cannot be empty.")]
+        [Required]
         public string LicensePlate { get; set; }
 
-        [Required(ErrorMessage = "Model cannot be empty.")]
+        [Required]
         public string Model { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Invalid brand ID.")]
+        [Required]
         public int BrandId { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Invalid car type ID.")]
+        [Required]
         public int CartypeId { get; set; }
 
+        [Required]
         public string Thumbnail { get; set; }
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "Invalid price.")]
+        [Required]
         public decimal Price { get; set; }
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "Invalid deposit.")]
+        [Required]
         public decimal Deposit { get; set; }
 
-        [Required(ErrorMessage = "Fuel type cannot be empty.")]
+        [Required]
         public string FuelType { get; set; }
 
-        [Required(ErrorMessage = "Transmission cannot be empty.")]
+        [Required]
         public string Transmission { get; set; }
 
-        [Required(ErrorMessage = "Km limit cannot be empty.")]
+        [Required]
         public string KmLimit { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Invalid model year.")]
+        [Required]
         public int ModelYear { get; set; }
 
+        [Required]
         public int ReverseSensor { get; set; }
 
+        [Required]
         public int AirConditioner { get; set; }
 
+        [Required]
         public int DriverAirbag { get; set; }
 
+        [Required]
         public int CDplayer { get; set; }
 
+        [Required]
         public int BrakeAssist { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Invalid number of seats.")]
+        [Required]
         public int Seats { get; set; }
 
-        [Range(0, 1, ErrorMessage = "Invalid status.")]
+        [Required]
         public int Status { get; set; }
 
-        [Required(ErrorMessage = "Description cannot be empty.")]
         public string Description { get; set; }
 
-        [Range(0, 5, ErrorMessage = "Invalid rating.")]
+        [Required]
         public double Rate { get; set; }
-
-        // Additional validation for galleries and car reviews if needed
-
     }
 }
