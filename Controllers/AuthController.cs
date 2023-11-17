@@ -154,5 +154,27 @@ namespace T2207A_API.Controllers
             }
             return Ok();
         }
+        [HttpDelete]
+        [Route("user/{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                var user = _context.Users.Find(id);
+                if (user == null)
+                {
+                    return NotFound("User not found");
+                }
+
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+
+                return Ok("User deleted successfully");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

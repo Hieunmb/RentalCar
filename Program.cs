@@ -48,16 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
             };
         });
-// add Policy
-builder.Services.AddSingleton<IAuthorizationHandler,
-                    RentalCar.Handlers.AdminAuthHandler>();
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("SuperAdmin", policy => policy.RequireClaim(
-        ClaimTypes.Email, "admin@gmail.com"));
-    options.AddPolicy("Member", policy => policy.RequireClaim(
-        ClaimTypes.Email));
-});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
